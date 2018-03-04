@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GenericHostApp.Kafka;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,14 +20,13 @@ namespace GenericHostApp
         {
             var hostBuilder = new HostBuilder()
                     .ConfigureLogging(loggerFactory => loggerFactory.AddConsole())
-                    .ConfigureServices(ConfigureServices);
+                    .AddKestrelApp(app => app.UseMvc())
+                    .ConfigureServices(services => services.AddMvcCore()
+                                                           .AddJsonFormatters()
+                                                           .SetCompatibilityVersion(CompatibilityVersion.Version_2_1))
+                    .AddKafka();
 
-            await hostBuilder.Build().RunAsync();
-        }
-
-        private static void ConfigureServices(HostBuilderContext context, IServiceCollection services)
-        {
-            services.AddSingleton<IHostedService, KafkaHostedService>();
+            await hostBuilder.RunConsoleAsync();
         }
     }
 }

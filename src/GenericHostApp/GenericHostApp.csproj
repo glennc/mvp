@@ -11,4 +11,9 @@
     <PackageReference Include="Polly" Version="5.8.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+    <Folder Include="Pages\" />
+  </ItemGroup>
+
 </Project>

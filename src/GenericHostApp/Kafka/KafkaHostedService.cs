@@ -1,5 +1,6 @@
 ﻿using Confluent.Kafka;
 using Confluent.Kafka.Serialization;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -32,13 +33,14 @@ namespace GenericHostApp.Kafka
 
             var config = new Dictionary<string, object>
             {
-                { "group.id", "simple-csharp-consumer" },
+                { "group.id", "simple-consumer" },
                 { "bootstrap.servers", brokerList }
             };
 
             _consumer = new Consumer<Ignore, string>(config, null, new StringDeserializer(Encoding.UTF8));
 
-            _consumer.Assign(new List<TopicPartitionOffset> { new TopicPartitionOffset(_topics, 0, 0) });
+            //_consumer.Assign(new List<TopicPartition> { new TopicPartition(_topics, 0) });
+            _consumer.Subscribe(_topics);
 
             _consumer.OnError += (_, error)
                 => _logger.LogError("Error: {error}", error);
@@ -46,20 +48,25 @@ namespace GenericHostApp.Kafka
             _consumer.OnConsumeError += (_, error)
                 => _logger.LogError("Consume error: {error}", error);
 
+            _consumer.OnMessage += ConsumeMessage;
+
             _runningTask = Task.Run(() => Run(_runToken.Token), _runToken.Token);
             return Task.CompletedTask;
+        }
+
+        private void ConsumeMessage(object sender, Message<Ignore, string> e)
+        {
+            _logger.LogInformation($"Topic: {e.Topic} Partition: {e.Partition} Offset: {e.Offset} {e.Value}");
         }
 
         private async Task Run(CancellationToken token)
         {
             while(!token.IsCancellationRequested)
             {
-                if (_consumer.Consume(out var msg, TimeSpan.FromSeconds(1)))
-                {
-                    _logger.LogInformation($"Topic: {msg.Topic} Partition: {msg.Partition} Offset: {msg.Offset} {msg.Value}");
-                    await _consumer.CommitAsync(msg);
-                }
+                _consumer.Poll(3000);
             }
+            await _consumer.CommitAsync();
+            _consumer.Dispose();
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
@@ -72,9 +79,16 @@ namespace GenericHostApp.Kafka
                 _logger.LogError("Unable to shutdown consumer task in a timely manner.");
             }
 
-            _consumer.Dispose();
-
             return Task.CompletedTask;
+        }
+    }
+
+    public static class KafkaExtensions
+    {
+        public static IHostBuilder AddKafka(this IHostBuilder builder)
+        {
+            builder.ConfigureServices(services => services.AddSingleton<IHostedService, KafkaHostedService>());
+            return builder;
         }
     }
 }

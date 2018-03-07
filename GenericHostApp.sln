@@ -3,12 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenericHostApp", "src\GenericHostApp\GenericHostApp.csproj", "{6E7FB3F9-F24A-450D-8970-0EA96D7BE038}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasketApi", "src\GenericHostApp\BasketApi.csproj", "{6E7FB3F9-F24A-450D-8970-0EA96D7BE038}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{D39BECD2-4AF3-43A3-972C-A333F1AD33E1}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FrontEnd", "FrontEnd\FrontEnd.csproj", "{0D5F8C32-3077-4E08-8262-12BC2CAAD0BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVPPrototypes", "MVPPrototypes\MVPPrototypes.csproj", "{88C900FB-38CE-410B-9103-1DFAAE5C4FBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auditor", "Auditor\Auditor.csproj", "{5FE64BCF-A3E8-4017-A9A0-67DE226E1DC4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +26,18 @@ Global
 		{6E7FB3F9-F24A-450D-8970-0EA96D7BE038}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E7FB3F9-F24A-450D-8970-0EA96D7BE038}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E7FB3F9-F24A-450D-8970-0EA96D7BE038}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D5F8C32-3077-4E08-8262-12BC2CAAD0BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D5F8C32-3077-4E08-8262-12BC2CAAD0BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D5F8C32-3077-4E08-8262-12BC2CAAD0BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D5F8C32-3077-4E08-8262-12BC2CAAD0BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88C900FB-38CE-410B-9103-1DFAAE5C4FBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88C900FB-38CE-410B-9103-1DFAAE5C4FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88C900FB-38CE-410B-9103-1DFAAE5C4FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88C900FB-38CE-410B-9103-1DFAAE5C4FBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FE64BCF-A3E8-4017-A9A0-67DE226E1DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FE64BCF-A3E8-4017-A9A0-67DE226E1DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FE64BCF-A3E8-4017-A9A0-67DE226E1DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FE64BCF-A3E8-4017-A9A0-67DE226E1DC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

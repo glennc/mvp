@@ -1,0 +1,22 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="row">
+    <h2>Basket Contents for Customer 1</h2>
+    <pre>
+        @Model.BasketContents
+    </pre>
+</div>
+
+<div class="row">
+    <form method="POST">
+        <div class="form-group">
+            <label for="newPrice">New Price</label>
+            <input type="text" asp-for="NewPrice" class="form-control" id="newPrice" aria-describedby="newPrice" placeholder="New Price">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

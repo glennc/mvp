@@ -80,53 +80,49 @@ namespace MvpPrototypes.RabbitMq
         private void Task_Recieved(object sender, BasicDeliverEventArgs e)
         {
             _logger.LogTrace("Recieved message from " + _options.QueueName);
-            if(!_routes.ContainsKey(e.RoutingKey))
+            if (!_routes.ContainsKey(e.RoutingKey))
             {
                 _logger.LogInformation("No route configured for {RoutintKey}", e.RoutingKey);
                 return;
             }
 
             var handler = _routes[e.RoutingKey];
-            var messageType = handler.GetParameters()
-                                     .Where(x => x.ParameterType != typeof(BasicDeliverEventArgs))
-                                     .FirstOrDefault();
 
-            if (messageType != null)
+
+            using (var scope = _sp.CreateScope())
             {
-                var data = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(e.Body), messageType.ParameterType);
-
-                _logger.LogTrace("Finished binding message body. Invoking handler.");
-                using (var scope = _sp.CreateScope())
+                try
                 {
-
                     var handlerType = ActivatorUtilities.GetServiceOrCreateInstance<T>(scope.ServiceProvider);
 
-                    try
+                    var parameters = handler.GetParameters();
+                    var handlerArgs = new object[parameters.Length];
+                    for (int i = 0; i < parameters.Length; i++)
                     {
-                        var parameters = handler.GetParameters();
-                        var handlerArgs = new object[parameters.Length];
-                        for(int i = 0; i < parameters.Length; i++)
+                        if (parameters[i].ParameterType == typeof(BasicDeliverEventArgs))
                         {
-                            if(parameters[i].ParameterType == messageType.ParameterType)
+                            handlerArgs[i] = e;
+                        }
+                        else
+                        {
+                            var service = scope.ServiceProvider.GetService(parameters[i].ParameterType);
+                            if (service != null)
                             {
-                                handlerArgs[i] = data;
-                            }
-                            else if(parameters[i].ParameterType == typeof(BasicDeliverEventArgs))
-                            {
-                                handlerArgs[i] = e;
+                                handlerArgs[i] = service;
                             }
                             else
                             {
-                                handlerArgs[i] = scope.ServiceProvider.GetRequiredService(parameters[i].ParameterType);
+                                var data = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(e.Body), parameters[i].ParameterType);
+                                handlerArgs[i] = data;
                             }
                         }
-                        handler.Invoke(handlerType, handlerArgs);
-                        _channel.BasicAck(e.DeliveryTag, false);
                     }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Error occured handling a message: {ex}", ex);
-                    }
+                    handler.Invoke(handlerType, handlerArgs);
+                    _channel.BasicAck(e.DeliveryTag, false);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error occured handling a message: {ex}", ex);
                 }
             }
         }

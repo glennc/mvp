@@ -15,6 +15,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using MvpPrototypes;
+using MvpPrototypes.WebHost;
 
 namespace GenericHostApp
 {

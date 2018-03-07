@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text;
 
-namespace GenericHostApp
+namespace Auditor
 {
-    public class PriceChangedCommand
+    public class PriceChanged
     {
         public Guid CommandId { get; set; }
         public int ItemId { get; set; }

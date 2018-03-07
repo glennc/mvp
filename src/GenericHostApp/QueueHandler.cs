@@ -1,4 +1,5 @@
 ﻿using GenericHostApp.Model;
+using Microsoft.Extensions.Logging;
 using MvpPrototypes.RabbitMq;
 using RabbitMQ.Client.Events;
 using System;
@@ -18,11 +19,11 @@ namespace GenericHostApp
         }
 
         [RouteKey("PriceChange")]
-        public void HandlePriceChanged(PriceChangedCommand Data)
+        public void HandlePriceChanged(PriceChanged data)
         {
-            foreach (var item in _context.BasketItems.Where(x => x.Id == Data.ItemId))
+            foreach (var item in _context.BasketItems.Where(x => x.Id == data.ItemId))
             {
-                item.Cost = Data.NewPrice;
+                item.Cost = data.NewPrice;
             }
             _context.SaveChanges();
         }
